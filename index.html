@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,115 +6,86 @@
     <title>Chatbot</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        .chat-messages {
-            height: 300px;
-            overflow-y: auto;
-            padding: 10px;
-            
-        }
         .chat-container {
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 10px;
+            height: 100vh;
+            overflow-y: auto;
+            margin-bottom: 35px;
         }
-        .message-text {
-            word-wrap: break-word;
-            margin-right: 0px;
+
+        .chat-message.received {
+            align-self: flex-start;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .chat-message.sent {
+            align-self: flex-end; 
+            background-color: #e0f7fa;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .send{
+            margin: 0px;
         }
     </style>
 </head>
-<body>
-    <div class="chat-container mx-auto mt-10 rounded-lg bg-white shadow-md p-5 ">
-        <div class="chat-header flex justify-between items-center mb-5">
-            <h2 class="text-lg font-bold">Chatbot</h2>
-            <div class="context-menu hidden absolute top-10 right-10 bg-red-500 rounded-md p-2">
-                <a href="#" class="block text-center text-white hover:bg-red-600 px-2 py-1">Option 1</a>
-                <a href="#" class="block text-center text-white hover:bg-red-600 px-2 py-1">Option 2</a>
+<body class="bg-gray-100 flex h-screen">
+    <div class="bg-red-600 hidden md:block lg:w-1/5 sm:w-0 h-full">
+        <p class="text-white p-4"></p>
+    </div>
+    <div class="container mx-auto rounded-lg bg-gray-100 shadow-md p-5 w-full md:w-4/5 flex flex-col">
+        <div class="regno bg-white -mt-5 -mx-5 mb-4">
+            <h2 class="text-2xl font-bold mb-4 text-center">23BCE1403</h2>
+        </div>
+
+
+        <div id="chat-container" class="chat-container">
+            <div class="chat-message sent">
+                <p class="text-gray-700">This is sent message.</p>
+                <span class="chat-time text-xs text-gray-500">02:59 PM</span>
+            </div>
+            <div class="chat-message received">
+                <p class="text-gray-700">This is a received message</p>
+                <span class="chat-time text-xs text-gray-500">02:58 PM</span>
             </div>
         </div>
-        <div class="chat-messages">
-            <div class="message message-bot flex items-start mb-2 flex-col">
-                <div class="message-text bg-red-200 rounded-lg p-2 max-w-xs mr-0">
-                    This is a received message
-                </div>
-                <div class="message-time text-gray-500 text-xs ml-2">02:58 PM</div>
-            </div>
-            <div class="message message-user flex items-start mb-2 flex-col">
-                <div class="message-text bg-yellow-200 rounded-lg p-2 max-w-xs">
-                    This is a sent message
-                </div>
-                <div class="message-time text-gray-500 text-xs ml-2">02:59 PM</div>
+
+        <div class="flex items-center w-4/5 send">
+            <div class="bg-white lg:w-4/5 w-full flex fixed bottom-0 right-0">
+                    <input type="text" id="message-input" class="flex-grow px-0 py-2 rounded-lg bg-white focus:outline-none" placeholder="Type your message..." /> <!-- Removed px-4 for 0 horizontal padding -->
+                    <button id="send-button" class="hover:bg-white-700 text-blue-600 font-bold py-2 px-4 rounded-lg ml-0">>></button>
             </div>
         </div>
-        <div class="chat-input flex items-center mt-5">
-            <input type="text" id="message-input" placeholder="Type your message..." class="flex-grow px-3 py-2 border rounded-md focus:outline-none focus:ring">
-            <button id="send-button" class="px-4 py-2 bg-blue-500 text-white rounded-md ml-2 hover:bg-blue-600 focus:outline-none focus:ring">Send</button>
-        </div>
+        
     </div>
 
     <script>
-        const messagesContainer = document.querySelector('.chat-messages');
+        const chatContainer = document.getElementById('chat-container');
         const messageInput = document.getElementById('message-input');
         const sendButton = document.getElementById('send-button');
-        const contextMenu = document.querySelector('.context-menu');
 
         sendButton.addEventListener('click', () => {
-            const messageText = messageInput.value.trim();
-            
-            if (messageText !== '') {
-                addMessage(messageText, 'user');
+            const message = messageInput.value;
+            if (message.trim() !== '') {
+                sendMessage(message);
                 messageInput.value = '';
             }
         });
 
-        messageInput.addEventListener('keyup', (event) => {
-            if (event.key === 'Enter') {
-                sendButton.click();
-            }
-        });
-        function addMessage(text, type) {
-    const messageElement = document.createElement('div');
-    messageElement.classList.add('message1');
-    messageElement.classList.add(`message1-${type}`);
-    if (type === 'user') {
-        messageElement.style.backgroundColor = 'lightgreen'; // Light yellow background
-        messageElement.style.borderRadius = '10px 10px 0px 10px'; // Rounded corners
-        messageElement.style.maxWidth = '50vw'; // Half screen width
-        messageElement.style.padding = '10px';
-        messageElement.style.margin= '10px 0px 0px 0px';
-        // messageElement.style.display = "flex"
-        // messageElement.style.justifyContent = "center"
-        // messageElement.style.display = "flex"
-
-        // Change here
-        messageElement.style.justifyItems = 'right';
-        
-        
-    }
-    const messageTextElement = document.createElement('div');
-    messageTextElement.classList.add('message-text');
-    messageTextElement.textContent = text;
-
-    // Change here 
-    const messageTimeElement = document.createElement('div');
-    messageTimeElement.classList.add('message-time');
-    const time = new Date();
-    const hours = time.getHours().toString().padStart(2, '0'); // Add leading zero if needed
-    const minutes = time.getMinutes().toString().padStart(2, '0'); // Add leading zero if needed
-    const amPm = time.getHours() < 12 ? 'AM' : 'PM';
-    messageTimeElement.textContent = `${hours}:${minutes} ${amPm}`;
-
-    messageTimeElement.style.fontSize = '12px'; // Make the time smaller
-
-    // Change here 
-    messageElement.appendChild(messageTextElement);
-    messagesContainer.appendChild(messageElement); 
-    messagesContainer.appendChild(messageTimeElement); 
-
-    // Scroll to the bottom of the messages container
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}
-
-      </script>
+        function sendMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('chat-message', 'sent');
+            messageElement.innerHTML = `
+                <p class="text-gray-700">${message}</p>
+                <span class="chat-time text-xs text-gray-500">${new Date().toLocaleTimeString()}</span>
+            `;
+            chatContainer.prepend(messageElement); // Prepend the new message
+            chatContainer.scrollTop = 0; // Scroll to the top of the chat container
+        }
+    </script>
 </body>
-</html> 
+</html>
